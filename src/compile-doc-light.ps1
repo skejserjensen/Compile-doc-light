@@ -10,9 +10,11 @@
 ###########################
 # Configuration variables #
 ###########################
-$DEFAULTDOC=""
-$LATEX=""
-$BIBTEX=""
+$DEFAULTDOC="p6DOC"
+
+$LATEX="lualatex"
+
+$BIBTEX="bibtex"
 
 ##########################
 #   Internal variables   #
@@ -71,12 +73,12 @@ function CheckUserConfiguration () {
     }
 }
 
-function ExtractBibTexFileName () {
-    return "\bibliography{$documentRootPath/01-Bibliography/references}"
-}
-
 function WriteIndexFile ([string]$textToWrite) {
     echo $textToWrite | Out-File $indexFilePath -Append -Encoding OEM
+}
+
+function WriteBibTexFileName ([string]$bibtexFolder) {
+    WriteIndexFile "\bibliography{$documentRootPath/$bibtexFolder/references}"
 }
 
 function ComposeIndexFile () {
@@ -93,13 +95,18 @@ function ComposeIndexFile () {
             continue 
         }
 
-        $texFile=$texFile -replace "\\","/"
-            $texFile="\input{Documents/$docName/" + $texFile + "}" 
-            WriteIndexFile $texFile
+		#All LaTeX compilers tested preferred Unix style file paths, so we convert \'s to /'s
+		$unixTexFile=$($texFile -replace "\\","/")
+		$unixTexFile="\input{Documents/$docName/" + $unixTexFile + "}" 
+		WriteIndexFile $unixTexFile
+	
+		#The standard layout has the .bib file in a folder named Bibliography, so many rearrangements should not be a problem
+		if ($texFile.contains("Bibliography")) {
+			WriteBibTexFileName $($texFile.Substring(0, $texFile.IndexOf("\")))
+		}
     }
 
-    #Writes the footer of the index.tex file, bibtex is allways is included as it fails silently if the file was not found
-    WriteIndexFile $(ExtractBibTexFileName)
+    #Writes the footer of the index.tex file
     WriteIndexFile "\end{document}"
 }
 
