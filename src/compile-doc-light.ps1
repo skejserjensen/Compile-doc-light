@@ -10,11 +10,9 @@
 ###########################
 # Configuration variables #
 ###########################
-$DEFAULTDOC="p6DOC"
-
-$LATEX="lualatex"
-
-$BIBTEX="bibtex"
+$DEFAULTDOC=""
+$LATEX=""
+$BIBTEX=""
 
 ##########################
 #   Internal variables   #
