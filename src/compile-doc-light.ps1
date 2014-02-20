@@ -18,6 +18,7 @@ $BIBTEX=""
 #   Internal variables   #
 ##########################
 $global:docName=$DEFAULTDOC
+$global:fileName=
 $global:documentRootPath=
 $global:indexFilePath=
 
@@ -30,10 +31,15 @@ function SetInternalVariables ([string]$cliInput) {
         $docName=$cliInput
     }
 
-    #Some parts of LaTeX appends ending them self, so we need only the name of file without type suffix
-    $docName=$docName.TrimStart(".\")
-    $docName=$docName.TrimEnd(".tex")
+    #We remove .tex if the user specified the entire file name as bibtex need the filename without .tex
+    if((Test-Path $docName) -and ($docName.EndsWith(".tex"))) {
+	$docName=$docName.Remove($docName.LastIndexOf("."))
+    }
+   
+    #Fianlly Windows path seperators must be converted to Unix path seperators
+    $docName=$docName.Replace("`\", "/")
     $global:docName=$docName
+    $global:fileName=$docName+".tex"
 
     #compile-doc is structured with a document specific folder in Documents per document in root
     $global:documentRootPath="Documents/$docName"
@@ -52,9 +58,9 @@ function CheckUserConfiguration () {
         exit
     }
 
-    #Checks that all the compile-doc files we need for compilation exists
-    if (!(Test-path ($docName+".tex"))) {
-        echo "ERROR: the document `"$docName`" was not found, please set defaultdoc correctly or pass a document as argument."
+    #Checks that all the compile-doc files we need for compilation exists, .tex is reattached to make the error more readable
+    if (!(Test-path ($fileName))) {
+        echo "ERROR: the document `"$fileName`" was not found, please set defaultdoc correctly or pass a document as argument."
         exit    
     }
 
@@ -109,10 +115,10 @@ function ComposeIndexFile () {
 }
 
 function CompileDocument () {
-    &$LATEX $docName
+    &$LATEX $fileName
     &$BIBTEX $docname
-    &$LATEX $docName
-    &$LATEX $docName
+    &$LATEX $fileName
+    &$LATEX $fileName
 }
 
 function CleanLogFiles () {
