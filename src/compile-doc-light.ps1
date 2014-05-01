@@ -33,7 +33,7 @@ function SetInternalVariables ([string]$cliInput) {
 
     #We remove .tex if the user specified the entire file name as bibtex need the filename without .tex
     if((Test-Path $docName) -and ($docName.EndsWith(".tex"))) {
-	$docName=$docName.Remove($docName.LastIndexOf("."))
+	    $docName=$docName.Remove($docName.LastIndexOf("."))
     }
    
     #Fianlly Windows path seperators must be converted to Unix path seperators
