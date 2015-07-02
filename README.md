@@ -5,9 +5,7 @@ The script implements the primary functions from compile-doc.sh and link-doc.sh,
 
 ## Installation
 1. Configure Powershell to allow unsigned scripts to be run, using the following command.
-```
-Set-ExecutionPolicy Unrestricted
-```
+`Set-ExecutionPolicy Unrestricted`
 
 2. Copy the script to your compile-doc installation and set your default document and preferred LaTeX compilers in the top of the script. 
 
