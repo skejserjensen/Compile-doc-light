@@ -9,5 +9,5 @@ The script implements the primary functions from compile-doc.sh and link-doc.sh,
 
 2. Copy the script to your compile-doc installation and set your default document and preferred LaTeX compilers in the top of the script.
 
-##License
+## License
 The program is licensed under version 3 of the GPL, and a copy of the license is bundled with the program.
